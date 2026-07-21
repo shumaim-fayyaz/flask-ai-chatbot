@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4">Search Chat History</h4>
+                
+                <form action="{{ url_for('search') }}" method="GET" class="d-flex mb-4">
+                    <input type="text" name="q" class="form-control me-2" placeholder="Search for keywords in your past chats..." value="{{ search_query or '' }}" required autofocus>
+                    <button type="submit" class="btn btn-dark px-4">Search</button>
+                </form>
+                
+                <!-- ALERTS FOR SEARCH RESULTS -->
+                {% if search_query %}
+                    {% if results %}
+                        <div class="alert alert-success shadow-sm border-0 mb-4" role="alert">
+                            Found <strong>{{ results|length }}</strong> matching message(s) for "<strong>{{ search_query }}</strong>".
+                        </div>
+                        
+                        <div class="list-group">
+                            {% for msg in results %}
+                                <div class="list-group-item list-group-item-action mb-2 border rounded shadow-sm">
+                                    <div class="d-flex w-100 justify-content-between mb-1">
+                                        <small class="text-muted fw-bold">
+                                            {% if msg.role == 'USER' %}You asked:{% else %}AI answered:{% endif %}
+                                        </small>
+                                        <small class="text-muted">{{ msg.timestamp.strftime('%b %d, %Y - %I:%M %p') }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ msg.content }}</p>
+                                    <small class="text-secondary">From Session ID: {{ msg.session_id }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning shadow-sm border-0" role="alert">
+                            <strong>No results found!</strong> We couldn't find any messages containing "<strong>{{ search_query }}</strong>". Try a different keyword.
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-light border border-secondary border-dashed text-center p-5" role="alert">
+                        Enter a search term above to dig through your saved conversations.
+                    </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('chat') }}" class="btn btn-outline-secondary">&larr; Back to Chat</a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

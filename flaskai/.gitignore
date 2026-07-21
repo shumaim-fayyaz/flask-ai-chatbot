@@ -1,0 +1,8 @@
+.vscode/
+.vs/
+misc/
+
+secrets.json
+*.env
+*.sqlite3
+*.zip
